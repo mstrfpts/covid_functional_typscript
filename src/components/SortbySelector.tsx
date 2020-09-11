@@ -8,7 +8,7 @@ interface IProps {
 
 const SortBySelector = (props: IProps) => {
   const { selectorValues, defaultSortBy, changeHandler } = props;
-  console.log("derd map sel", selectorValues);
+
   return (
     <span className={"SortList"}>
       <label>Sort by :</label>

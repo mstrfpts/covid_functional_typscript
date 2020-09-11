@@ -1,22 +1,23 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchApi, updateSortBy } from "../store/actions";
+import { fetchApi, filterData, updateSortBy } from "../store/actions";
 import { IState } from "../store/reducer";
 import { getPropCount } from "./counts";
 import Search from "./Search";
 import Table from "./Table/Table";
 import SortbySelector from "./SortbySelector";
 import "./MainPage.css";
-import SortBySelector from "./SortbySelector";
 
 const MainPage = () => {
   const state = useSelector((state: IState) => state);
+  const data = useSelector((state: IState) => state.data);
   const filteredData = useSelector((state: IState) => state.filteredData);
   const status = useSelector((state: IState) => state.status);
   const sortbySelectorValues = useSelector(
     (state: IState) => state.sortbySelectorValues
   );
   const sortBy = useSelector((state: IState) => state.sortBy);
+  const searchTerm = useSelector((state: IState) => state.searchTerm);
 
   let tableColumns = [
     "Country",
@@ -32,9 +33,12 @@ const MainPage = () => {
 
   useEffect(() => {
     document.title = "Coronavirus tracker";
-    console.log("derd, useEffect");
-    dispatch(fetchApi(sortBy, dispatch));
+    dispatch(fetchApi(sortBy, searchTerm, filteredData, dispatch));
   }, [sortBy]);
+
+  useEffect(() => {
+    dispatch(filterData(data, searchTerm));
+  }, [searchTerm, data]);
 
   const scrollHeightSetter = () => {
     let scrollHeight =

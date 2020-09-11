@@ -4,6 +4,7 @@ export interface IState {
   status: string;
   sortbySelectorValues: string[];
   sortBy: string;
+  searchTerm: string;
 }
 
 const initialState: IState = {
@@ -12,6 +13,7 @@ const initialState: IState = {
   filteredData: [],
   sortbySelectorValues: ["Cases", "Active", "Deaths", "Country", "Tests"],
   sortBy: "cases",
+  searchTerm: "",
 };
 
 function rootReducer(state = initialState, action: any) {
@@ -28,7 +30,10 @@ function rootReducer(state = initialState, action: any) {
       return Object.assign({}, state, {
         status: "Success",
         data: action.payload.response,
-        filteredData: action.payload.response,
+        filteredData:
+          action.payload.searchTerm === ""
+            ? action.payload.response
+            : action.payload.filteredData,
       });
     case "FILTER_DATA":
       return Object.assign({}, state, {
@@ -36,6 +41,8 @@ function rootReducer(state = initialState, action: any) {
       });
     case "UPDATE_SORTBY":
       return Object.assign({}, state, { sortBy: action.payload });
+    case "UPDATE_SEARCH_TERM":
+      return Object.assign({}, state, { searchTerm: action.payload });
     default:
       return state;
   }
