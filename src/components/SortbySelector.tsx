@@ -1,4 +1,5 @@
 import React from "react";
+import "./MainPage.css";
 
 interface IProps {
   selectorValues: string[];

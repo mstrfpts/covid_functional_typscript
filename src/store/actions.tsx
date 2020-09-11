@@ -1,3 +1,6 @@
+import { useSelector } from "react-redux";
+import { IState } from "./reducer";
+
 export function fetchApi(
   defaultSortBy: string,
   searchTerm: string,
@@ -69,5 +72,60 @@ export function updateSearchTerm(searchString: string) {
   return {
     type: "UPDATE_SEARCH_TERM",
     payload: searchString,
+  };
+}
+
+export function updateCountryClicked(countryClicked: string) {
+  return {
+    type: "UPDATE_COUNTRY_CLICKED",
+    payload: { countryClicked: countryClicked },
+  };
+}
+
+export function updateHistoricalDataFetched(value: boolean) {
+  return {
+    type: "UPDATE_HISTORICAL_DATA_FETCHED",
+    payload: value,
+  };
+}
+
+export function updateCountryHistoricalData(data: object) {
+  return {
+    type: "UPDATE_COUNTRY_HISTORICAL_DATA",
+    payload: data,
+  };
+}
+
+export function updateCountryData(
+  countryClicked: string,
+  daysOfData: number,
+  dispatch: any
+) {
+  dispatch(updateCountryClicked(countryClicked));
+
+  return function (dispatch: any) {
+    fetch(
+      `https://corona.lmao.ninja/v2/historical/${countryClicked}?lastdays=${daysOfData}`
+    )
+      .then((response) => {
+        if (response.ok) {
+          dispatch(updateHistoricalDataFetched(true));
+          return response.json();
+        } else {
+          dispatch(updateHistoricalDataFetched(true));
+          throw new Error("Historical fetch failed/timeout");
+        }
+      })
+      .then((json) => dispatch(updateCountryHistoricalData(json.timeline)))
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+}
+
+export function updateDaysOfData(daysOfData: number) {
+  return {
+    type: "UPDATE_DAYS_OF_DATA",
+    payload: daysOfData,
   };
 }

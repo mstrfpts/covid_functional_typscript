@@ -1,6 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchApi, filterData, updateSortBy } from "../store/actions";
+import {
+  fetchApi,
+  filterData,
+  updateSortBy,
+  updateCountryData,
+} from "../store/actions";
 import { IState } from "../store/reducer";
 import { getPropCount } from "./counts";
 import Search from "./Search";
@@ -18,6 +23,7 @@ const MainPage = () => {
   );
   const sortBy = useSelector((state: IState) => state.sortBy);
   const searchTerm = useSelector((state: IState) => state.searchTerm);
+  const daysOfData = useSelector((state: IState) => state.daysOfData);
 
   let tableColumns = [
     "Country",
@@ -58,6 +64,29 @@ const MainPage = () => {
     dispatch(updateSortBy(sortTerm));
   };
 
+  const updateGraph = (countryClicked: string) => {
+    dispatch(updateCountryData(countryClicked, daysOfData, dispatch));
+    /*this.setState(this.updateCountryData(countryClicked), () => {
+        fetch(
+        `https://corona.lmao.ninja/v2/historical/${this.state.countrySelected.country}?lastdays=${daysOfData}`
+        )
+        .then((response) => {
+            if (response.ok) {
+            this.setState({ historicalDataFetched: true });
+            return response.json();
+            } else {
+            this.setState({ historicalDataFetched: false });
+            throw new Error("Historical fetch failed/timeout");
+            }
+        })
+        .then((json) => this.updateCountryHistoricalData(json.timeline))
+        .catch((error) => {
+            console.log(error);
+        });
+    });
+    };*/
+  };
+
   return (
     <div className={"imageContainer"}>
       {filteredData ? (
@@ -89,7 +118,7 @@ const MainPage = () => {
               columns={tableColumns}
               heightSetter={scrollHeightSetter}
               filteredData={filteredData}
-              // updateGraph={this.updateGraph}
+              updateGraph={updateGraph}
             />
           </div>
         </div>

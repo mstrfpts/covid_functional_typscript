@@ -49,6 +49,14 @@
   background: #bbb;
 }
 
+.graphDropdown {
+  margin-right: 20px;
+}
+
+.graphDropdownLabel {
+  margin-left: -25px;
+}
+
 @media screen and (max-width: 350px) {
   .gContainer {
     margin: 0 -4px;

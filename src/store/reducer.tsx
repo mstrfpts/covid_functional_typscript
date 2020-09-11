@@ -5,6 +5,11 @@ export interface IState {
   sortbySelectorValues: string[];
   sortBy: string;
   searchTerm: string;
+  displayGraph: boolean;
+  historicalDataFetched: boolean;
+  countrySelected: string;
+  countrySelectedHistoricalData: object;
+  daysOfData: number;
 }
 
 const initialState: IState = {
@@ -14,6 +19,11 @@ const initialState: IState = {
   sortbySelectorValues: ["Cases", "Active", "Deaths", "Country", "Tests"],
   sortBy: "cases",
   searchTerm: "",
+  displayGraph: true,
+  historicalDataFetched: true,
+  countrySelected: "",
+  countrySelectedHistoricalData: {},
+  daysOfData: 60,
 };
 
 function rootReducer(state = initialState, action: any) {
@@ -43,6 +53,20 @@ function rootReducer(state = initialState, action: any) {
       return Object.assign({}, state, { sortBy: action.payload });
     case "UPDATE_SEARCH_TERM":
       return Object.assign({}, state, { searchTerm: action.payload });
+    case "UPDATE_COUNTRY_CLICKED":
+      return Object.assign({}, state, {
+        countrySelected: action.payload.countryClicked,
+      });
+    case "UPDATE_HISTORICAL_DATA_FETCHED":
+      return Object.assign({}, state, {
+        historicalDataFetched: action.payload,
+      });
+    case "UPDATE_COUNTRY_HISTORICAL_DATA":
+      return Object.assign({}, state, {
+        countrySelectedHistoricalData: action.payload,
+      });
+    case "UPDATE_DAYS_OF_DATA":
+      return Object.assign({}, state, { daysOfData: action.payload });
     default:
       return state;
   }
