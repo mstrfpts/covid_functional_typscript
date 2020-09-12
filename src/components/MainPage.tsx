@@ -67,26 +67,7 @@ const MainPage = () => {
   };
 
   const updateGraph = (countryClicked: string) => {
-    dispatch(updateCountryData(countryClicked, daysOfData, dispatch));
-    /*this.setState(this.updateCountryData(countryClicked), () => {
-        fetch(
-        `https://corona.lmao.ninja/v2/historical/${this.state.countrySelected.country}?lastdays=${daysOfData}`
-        )
-        .then((response) => {
-            if (response.ok) {
-            this.setState({ historicalDataFetched: true });
-            return response.json();
-            } else {
-            this.setState({ historicalDataFetched: false });
-            throw new Error("Historical fetch failed/timeout");
-            }
-        })
-        .then((json) => this.updateCountryHistoricalData(json.timeline))
-        .catch((error) => {
-            console.log(error);
-        });
-    });
-    };*/
+    dispatch(updateCountryData(countryClicked, data, daysOfData, dispatch));
   };
 
   return (

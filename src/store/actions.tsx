@@ -1,3 +1,6 @@
+import MainPage from "../components/MainPage";
+import { getDailyCount } from "../components/CountryData";
+
 export function fetchApi(
   defaultSortBy: string,
   searchTerm: string,
@@ -72,10 +75,16 @@ export function updateSearchTerm(searchString: string) {
   };
 }
 
-export function updateCountryClicked(countryClicked: string) {
+export function updateCountryClicked(
+  countryClicked: string,
+  countrySelectedData: any
+) {
   return {
     type: "UPDATE_COUNTRY_CLICKED",
-    payload: { countryClicked: countryClicked },
+    payload: {
+      countrySelected: countryClicked,
+      countrySelectedData: countrySelectedData,
+    },
   };
 }
 
@@ -95,12 +104,16 @@ export function updateCountryHistoricalData(data: object) {
 
 export function updateCountryData(
   countryClicked: string,
+  data: any[],
   daysOfData: number,
   dispatch: any
 ) {
-  dispatch(updateCountryClicked(countryClicked));
+  let countrySelectedData = data.find(
+    (element) => element.country === countryClicked
+  );
+  dispatch(updateCountryClicked(countryClicked, countrySelectedData));
 
-  return function (dispatch: any) {
+  return function (countrySelectedData: any, dispatch: any) {
     fetch(
       `https://corona.lmao.ninja/v2/historical/${countryClicked}?lastdays=${daysOfData}`
     )
@@ -109,11 +122,17 @@ export function updateCountryData(
           dispatch(updateHistoricalDataFetched(true));
           return response.json();
         } else {
-          dispatch(updateHistoricalDataFetched(true));
+          dispatch(updateHistoricalDataFetched(false));
           throw new Error("Historical fetch failed/timeout");
         }
       })
-      .then((json) => dispatch(updateCountryHistoricalData(json.timeline)))
+      .then((json) => {
+        dispatch(updateCountryHistoricalData(json.timeline));
+        return json;
+      })
+      .then((json) =>
+        getDailyCount(json.timeline, countrySelectedData, daysOfData)
+      )
       .catch((error) => {
         console.log(error);
       });

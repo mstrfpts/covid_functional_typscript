@@ -8,7 +8,8 @@ export interface IState {
   displayGraph: boolean;
   historicalDataFetched: boolean;
   countrySelected: string;
-  countrySelectedHistoricalData: object;
+  countrySelectedData: any;
+  countrySelectedHistoricalData: { cases: {}; deaths: {}; active: {} };
   daysOfData: number;
 }
 
@@ -22,7 +23,8 @@ const initialState: IState = {
   displayGraph: true,
   historicalDataFetched: true,
   countrySelected: "",
-  countrySelectedHistoricalData: {},
+  countrySelectedData: {},
+  countrySelectedHistoricalData: { cases: {}, deaths: {}, active: {} },
   daysOfData: 60,
 };
 
@@ -55,7 +57,8 @@ function rootReducer(state = initialState, action: any) {
       return Object.assign({}, state, { searchTerm: action.payload });
     case "UPDATE_COUNTRY_CLICKED":
       return Object.assign({}, state, {
-        countrySelected: action.payload.countryClicked,
+        countrySelected: action.payload.countrySelected,
+        countrySelectedData: action.payload.countrySelectedData,
       });
     case "UPDATE_HISTORICAL_DATA_FETCHED":
       return Object.assign({}, state, {
