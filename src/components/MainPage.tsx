@@ -17,7 +17,6 @@ const MainPage = () => {
   const state = useSelector((state: IState) => state);
   const data = useSelector((state: IState) => state.data);
   const filteredData = useSelector((state: IState) => state.filteredData);
-  const status = useSelector((state: IState) => state.status);
   const sortbySelectorValues = useSelector(
     (state: IState) => state.sortbySelectorValues
   );
@@ -44,6 +43,9 @@ const MainPage = () => {
 
   useEffect(() => {
     dispatch(filterData(data, searchTerm));
+    if (data.length) {
+      updateGraph(data[0].country);
+    }
   }, [searchTerm, data]);
 
   const scrollHeightSetter = () => {

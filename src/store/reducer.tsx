@@ -1,6 +1,6 @@
 export interface IState {
-  data: object[];
-  filteredData: object[];
+  data: any[];
+  filteredData: any[];
   status: string;
   sortbySelectorValues: string[];
   sortBy: string;
