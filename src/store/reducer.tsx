@@ -11,6 +11,12 @@ export interface IState {
   countrySelectedData: any;
   countrySelectedHistoricalData: any;
   countrySelectedHistoricalDataDailyCount: any;
+  countrySelectedHistoricalDataDailyPattern: {
+    countRising: boolean;
+    sampleSize: number;
+    daysRising: number;
+    daysFalling: number;
+  };
   daysOfData: number;
 }
 
@@ -27,6 +33,12 @@ const initialState: IState = {
   countrySelectedData: {},
   countrySelectedHistoricalData: {},
   countrySelectedHistoricalDataDailyCount: {},
+  countrySelectedHistoricalDataDailyPattern: {
+    countRising: false,
+    sampleSize: 10,
+    daysRising: 0,
+    daysFalling: 0,
+  },
   daysOfData: 60,
 };
 

@@ -14,6 +14,7 @@ import Search from "./Search";
 import Table from "./Table/Table";
 import SortbySelector from "./SortbySelector";
 import Graph from "./Graph";
+import Footer from "./Footer";
 import "./MainPage.css";
 import { getDailyCount } from "./CountryData";
 
@@ -138,6 +139,9 @@ const MainPage = () => {
       ) : (
         <div className={"Header Title"}>Loading...</div>
       )}
+      <div className={"Header"}>
+        <Footer />
+      </div>
     </div>
   );
 };
