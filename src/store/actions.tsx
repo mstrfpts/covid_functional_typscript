@@ -1,6 +1,3 @@
-import MainPage from "../components/MainPage";
-import { getDailyCount } from "../components/CountryData";
-
 export function fetchApi(
   defaultSortBy: string,
   searchTerm: string,
@@ -88,16 +85,17 @@ export function updateCountryClicked(
   };
 }
 
-export function updateHistoricalDataFetched(value: boolean) {
+export function updateCountryHistoricalData(data: []) {
+  console.log("historical dispatch action", data);
   return {
-    type: "UPDATE_HISTORICAL_DATA_FETCHED",
-    payload: value,
+    type: "UPDATE_COUNTRY_HISTORICAL_DATA",
+    payload: data,
   };
 }
 
-export function updateCountryHistoricalData(data: object) {
+export function updateHistoricalDataDailyCount(data: {}) {
   return {
-    type: "UPDATE_COUNTRY_HISTORICAL_DATA",
+    type: "UPDATE_COUNTRY_HISTORICAL_DATA_DAILY_COUNT",
     payload: data,
   };
 }
@@ -113,28 +111,16 @@ export function updateCountryData(
   );
   dispatch(updateCountryClicked(countryClicked, countrySelectedData));
 
-  return function (countrySelectedData: any, dispatch: any) {
+  return function (dispatch: any) {
     fetch(
       `https://corona.lmao.ninja/v2/historical/${countryClicked}?lastdays=${daysOfData}`
     )
-      .then((response) => {
-        if (response.ok) {
-          dispatch(updateHistoricalDataFetched(true));
-          return response.json();
-        } else {
-          dispatch(updateHistoricalDataFetched(false));
-          throw new Error("Historical fetch failed/timeout");
-        }
+      .then((response) => response.json())
+      .then((data) => {
+        dispatch(updateCountryHistoricalData(data.timeline));
       })
-      .then((json) => {
-        dispatch(updateCountryHistoricalData(json.timeline));
-        return json;
-      })
-      .then((json) =>
-        getDailyCount(json.timeline, countrySelectedData, daysOfData)
-      )
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        dispatch(setFetchApiFailure(err.message));
       });
   };
 }
@@ -143,5 +129,18 @@ export function updateDaysOfData(daysOfData: number) {
   return {
     type: "UPDATE_DAYS_OF_DATA",
     payload: daysOfData,
+  };
+}
+
+export function toggleGraphicalView() {
+  return {
+    type: "TOGGLE_GRAPHICAL_VIEW",
+  };
+}
+
+export function updateGraphData(graphData: string) {
+  return {
+    type: "UPDATE_GRAPH_DATA",
+    payload: graphData,
   };
 }

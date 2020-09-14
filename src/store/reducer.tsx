@@ -6,10 +6,11 @@ export interface IState {
   sortBy: string;
   searchTerm: string;
   displayGraph: boolean;
-  historicalDataFetched: boolean;
+  graphData: string;
   countrySelected: string;
   countrySelectedData: any;
-  countrySelectedHistoricalData: { cases: {}; deaths: {}; active: {} };
+  countrySelectedHistoricalData: any;
+  countrySelectedHistoricalDataDailyCount: any;
   daysOfData: number;
 }
 
@@ -21,10 +22,11 @@ const initialState: IState = {
   sortBy: "cases",
   searchTerm: "",
   displayGraph: true,
-  historicalDataFetched: true,
+  graphData: "Cases",
   countrySelected: "",
   countrySelectedData: {},
-  countrySelectedHistoricalData: { cases: {}, deaths: {}, active: {} },
+  countrySelectedHistoricalData: {},
+  countrySelectedHistoricalDataDailyCount: {},
   daysOfData: 60,
 };
 
@@ -60,16 +62,22 @@ function rootReducer(state = initialState, action: any) {
         countrySelected: action.payload.countrySelected,
         countrySelectedData: action.payload.countrySelectedData,
       });
-    case "UPDATE_HISTORICAL_DATA_FETCHED":
-      return Object.assign({}, state, {
-        historicalDataFetched: action.payload,
-      });
     case "UPDATE_COUNTRY_HISTORICAL_DATA":
+      console.log("update historical reducer", action.payload);
       return Object.assign({}, state, {
         countrySelectedHistoricalData: action.payload,
       });
+
+    case "UPDATE_COUNTRY_HISTORICAL_DATA_DAILY_COUNT":
+      return Object.assign({}, state, {
+        countrySelectedHistoricalDataDailyCount: action.payload,
+      });
     case "UPDATE_DAYS_OF_DATA":
       return Object.assign({}, state, { daysOfData: action.payload });
+    case "TOGGLE_GRAPHICAL_VIEW":
+      return Object.assign({}, state, { displayGraph: !state.displayGraph });
+    case "UPDATE_GRAPH_DATA":
+      return Object.assign({}, state, { graphData: action.payload });
     default:
       return state;
   }

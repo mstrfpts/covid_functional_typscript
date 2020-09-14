@@ -5,13 +5,17 @@ import {
   filterData,
   updateSortBy,
   updateCountryData,
+  updateCountryHistoricalData,
+  toggleGraphicalView,
 } from "../store/actions";
 import { IState } from "../store/reducer";
 import { getPropCount } from "./counts";
 import Search from "./Search";
 import Table from "./Table/Table";
 import SortbySelector from "./SortbySelector";
+import Graph from "./Graph";
 import "./MainPage.css";
+import { getDailyCount } from "./CountryData";
 
 const MainPage = () => {
   const state = useSelector((state: IState) => state);
@@ -23,6 +27,12 @@ const MainPage = () => {
   const sortBy = useSelector((state: IState) => state.sortBy);
   const searchTerm = useSelector((state: IState) => state.searchTerm);
   const daysOfData = useSelector((state: IState) => state.daysOfData);
+  const countrySelectedData = useSelector(
+    (state: IState) => state.countrySelectedData
+  );
+  const countrySelectedHistoricalData = useSelector(
+    (state: IState) => state.countrySelectedHistoricalData
+  );
 
   let tableColumns = [
     "Country",
@@ -34,7 +44,6 @@ const MainPage = () => {
   const dispatch = useDispatch();
 
   console.log("derd, state", state);
-  console.log("derd, filteredData", filteredData);
 
   useEffect(() => {
     document.title = "Coronavirus tracker";
@@ -44,10 +53,26 @@ const MainPage = () => {
   useEffect(() => {
     dispatch(filterData(data, searchTerm));
     if (data.length) {
-      updateGraph(data[0].country);
+      updateGraph(data[0].country, dispatch);
     }
-  }, [searchTerm, data]);
+  }, [searchTerm, data, daysOfData]);
 
+  useEffect(() => {
+    if (filteredData.length) {
+      updateGraph(filteredData[0].country, dispatch);
+    }
+  }, [filteredData]);
+
+  useEffect(() => {
+    if (countrySelectedHistoricalData) {
+      getDailyCount(
+        countrySelectedHistoricalData,
+        countrySelectedData,
+        daysOfData,
+        dispatch
+      );
+    }
+  }, [countrySelectedHistoricalData]);
   const scrollHeightSetter = () => {
     let scrollHeight =
       /*this.state.displayGraph
@@ -66,7 +91,8 @@ const MainPage = () => {
     dispatch(updateSortBy(sortTerm));
   };
 
-  const updateGraph = (countryClicked: string) => {
+  const updateGraph = (countryClicked: string, dispatch: any) => {
+    console.log("derd, update graph");
     dispatch(updateCountryData(countryClicked, data, daysOfData, dispatch));
   };
 
@@ -88,6 +114,9 @@ const MainPage = () => {
               <div> {`Deaths: ${getPropCount(filteredData, "deaths")}`}</div>
             </div>
           </div>
+          <div>
+            <Graph />
+          </div>
           <div className={"TableContainer"}>
             <div className={"Search"}>
               <Search />
@@ -102,6 +131,7 @@ const MainPage = () => {
               heightSetter={scrollHeightSetter}
               filteredData={filteredData}
               updateGraph={updateGraph}
+              dispatch={dispatch}
             />
           </div>
         </div>
